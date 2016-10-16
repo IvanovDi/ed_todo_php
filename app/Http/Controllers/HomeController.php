@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Repositories\Criteries\TaskOrderBy;
+use App\Repositories\TaskRepository;
+use View;
+
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    protected $taskRepo;
+
+    public function __construct(TaskRepository $taskRepo)
     {
         $this->middleware('auth');
+        $this->taskRepo = $taskRepo;
     }
 
     /**
@@ -23,6 +24,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $tasks = $this->taskRepo->pushCriteria(new TaskOrderBy())->paginate(2);
+        if (View::exists('task.task')) {
+//            return view('task.task', ['tasks' => $tasks]);
+            return view('task.task')->with(['tasks' => $tasks]);
+        } else{
+            echo '<h1 style="color: red; text-align: center;  ">no exist this page</h1>';
+        }
     }
 }

@@ -11,13 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('task.index');
-});
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
+Route::get('/', [
+    'as' => 'home.index',
+    'uses' => 'HomeController@index'
+]);
 
 Route::resource('task', 'TaskController');
 
